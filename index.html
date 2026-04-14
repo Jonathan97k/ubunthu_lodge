@@ -171,10 +171,14 @@
     }
     .hero-img {
       position: absolute; inset: 0;
-      background-image: url('images/hero.jpg');
-      background-size: cover; background-position: center;
       opacity: 0.22; z-index: 1; mix-blend-mode: luminosity;
     }
+    .hero-img .slide {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: 0; transition: opacity 1.5s ease-in-out;
+    }
+    .hero-img .slide.active { opacity: 1; }
     .hero-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(to top, rgba(13,51,24,0.9) 0%, transparent 60%);
@@ -689,7 +693,7 @@
   <!-- HERO -->
   <header class="hero" id="home">
     <div class="hero-bg"></div>
-    <div class="hero-img"></div>
+    <div class="hero-img" id="heroSlideshow"></div>
     <div class="hero-overlay"></div>
     <div class="hero-inner">
       <div class="hero-eyebrow">Salima, Malawi · Est. 2020</div>
@@ -837,7 +841,7 @@
           </div>
 
           <div class="room-card">
-            <div class="room-visual" style="background: url('executive%20room.jpg') center/cover, linear-gradient(135deg,#12301a,#2d6e32);">
+            <div class="room-visual" style="background: url('images/executive%20room.jpg') center/cover, linear-gradient(135deg,#12301a,#2d6e32);">
               <div class="room-badge">Premium</div>
               <div class="room-visual-name">Executive Suite</div>
             </div>
@@ -853,7 +857,7 @@
           </div>
 
           <div class="room-card">
-            <div class="room-visual" style="background: url('family%20room.jpg') center/cover, linear-gradient(135deg,#0f2c18,#28663c);">
+            <div class="room-visual" style="background: url('images/family%20room.jpg') center/cover, linear-gradient(135deg,#0f2c18,#28663c);">
               <div class="room-visual-name">Family Room</div>
             </div>
             <div class="room-body">
@@ -962,19 +966,19 @@
             </div>
             <div class="gal-overlay"><span>🔍</span></div>
           </div>
-          <div class="gal-item" style="background: url('boardroom.jpg') center/cover, linear-gradient(135deg,#0d2514,#236028);">
+          <div class="gal-item" style="background: url('images/boardroom.jpg') center/cover, linear-gradient(135deg,#0d2514,#236028);">
             <div class="gal-inner">
               <span class="gal-name">Boardroom</span>
             </div>
             <div class="gal-overlay"><span>🔍</span></div>
           </div>
-          <div class="gal-item" style="background: url('Reception.jpg') center/cover, linear-gradient(135deg,#102e1a,#2a6a34);">
+          <div class="gal-item" style="background: url('images/Reception.jpg') center/cover, linear-gradient(135deg,#102e1a,#2a6a34);">
             <div class="gal-inner">
               <span class="gal-name">Reception</span>
             </div>
             <div class="gal-overlay"><span>🔍</span></div>
           </div>
-          <div class="gal-item" style="background: url('pull.jpg') center/cover, linear-gradient(135deg,#0c2714,#1e5a28);">
+          <div class="gal-item" style="background: url('images/pull.jpg') center/cover, linear-gradient(135deg,#0c2714,#1e5a28);">
             <div class="gal-inner">
               <span class="gal-name">Garden View</span>
             </div>
@@ -1295,6 +1299,47 @@
         idx = (idx + 1) % slides.length;
         slides.forEach((s,i)=> s.classList.toggle('active', i===idx));
       }, 3000);
+    })();
+
+    // ── HERO SLIDESHOW ───────────────────────────
+    (function(){
+      const heroImages = [
+        'images/Dining.jpg',
+        'images/executive room.jpg',
+        'images/family room.jpg',
+        'images/kitchen.jpg',
+        'images/pull.jpg',
+        'images/Reception.jpg',
+        'images/Ubunthu conference hall.jpg',
+        'images/a place called home/conference all.jpg',
+        'images/a place called home/conference hall 1.jpg',
+        'images/a place called home/Hero image.jpg',
+        'images/a place called home/pull.jpg',
+        'images/a place called home/ubunthu.jpg',
+        'images/standard rooms/room 1.jpg',
+        'images/standard rooms/room.jpg',
+        'images/upcoming events/Upcoming events.jpg'
+      ];
+      const slideshowContainer = document.getElementById('heroSlideshow');
+      if (slideshowContainer) {
+        heroImages.forEach((src, idx) => {
+          const div = document.createElement('div');
+          div.className = 'slide' + (idx === 0 ? ' active' : '');
+          // Handle spaces in URLs
+          div.style.backgroundImage = `url('${encodeURI(src).replace(/'/g, "%27")}')`;
+          slideshowContainer.appendChild(div);
+        });
+        
+        let currentSlide = 0;
+        const slides = slideshowContainer.querySelectorAll('.slide');
+        if(slides.length > 1) {
+          setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+          }, 4500); // Change image every 4.5s
+        }
+      }
     })();
   </script>
 </body>
